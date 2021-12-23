@@ -11,19 +11,17 @@ import java.util.Queue;
 
 @RestController
 public class OutQueue {
-    private final Queue<Response> queue = new ArrayDeque();
     @Value("${queue.maxSize:1000}")
     private int maxSize;
+    private  MessageQueue<Response> queue = new MessageQueue<>(maxSize);
 
     @PutMapping("/putResponse")
     public void put(@RequestBody Response response) {
-        if (queue.size() < maxSize) {
-            queue.add(response);
-        }
+        queue.put(response);
     }
 
     @GetMapping("/getResponse")
     public Response get() {
-        return queue.poll();
+        return queue.get();
     }
 }

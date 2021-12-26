@@ -1,25 +1,18 @@
 package ru.mipt;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class InQueue {
-    private final Queue<Request> queue = new ArrayDeque();
-    @Value("${queue.maxSize:1000}")
-    private int maxSize = 1000;
+    private final MessageQueue<Request> queue = new MessageQueue<>();
 
     @PutMapping("/putRequest")
     public void put(@RequestBody Request request) {
-        if (queue.size() < maxSize) {
-            queue.add(request);
-        }
+        queue.put(request);
     }
 
     @GetMapping("/getRequest")
     public Request get() {
-        return queue.poll();
+        return queue.get();
     }
 }
